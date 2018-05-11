@@ -23,26 +23,34 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+const version = "BambooCTL v0.1.0"
+
+var (
+	cfgFile     string
+	versionFlag bool
+)
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "bambooctl",
-	Short: "bambooctl is a commandline tool to help manage the Atlassian Bamboo CI server.",
-	Long: `usage: bambooctl [-version] [-help] <command> [args]
+	Use:   "bambooctl [--version] [--help] <command> [args]",
+	Short: "bambooctl [--version] [--help] <command> [args]",
+	Long: `bambooctl [--version] [--help] <command> [args]
+
+bambooctl is a commandline tool to help manage and interact with the Atlassian Bamboo CI server. 
+Many of the commands require admin privleges, but some can be accessed with lesser user permissions.
 	
-	Commands:
-		project			Project related operations`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+	Admin Commands:
+		project			Project related operations
+		
+		
+	Non-Admin Commands:
+		ToDo			ToDo`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }
@@ -50,14 +58,18 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
+	// Global flags
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.bambooctl.yaml)")
+	RootCmd.PersistentFlags().BoolVarP(&versionFlag, "version", "v", false, "")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// Blank Run func to allow the output of RootCmd.Use in error messages and help output
+	RootCmd.Run = func(cmd *cobra.Command, args []string) {
+		if versionFlag {
+			fmt.Println(version)
+		} else {
+			RootCmd.Usage()
+		}
+	}
 }
 
 // initConfig reads in config file and ENV variables if set.
