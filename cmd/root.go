@@ -19,6 +19,7 @@ import (
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
+	bamboo "github.com/rcarmstrong/go-bamboo"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -26,6 +27,7 @@ import (
 const version = "BambooCTL v0.1.0"
 
 var (
+	cli         *bamboo.Client
 	cfgFile     string
 	versionFlag bool
 )
@@ -93,7 +95,14 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println("Error reading in config:", err)
+		os.Exit(1)
+	}
+
+	cli = bamboo.NewSimpleClient(nil, viper.GetString("username"), viper.GetString("password"))
+
+	if viper.GetString("url") != "" {
+		cli.SetURL(viper.GetString("url"))
 	}
 }
