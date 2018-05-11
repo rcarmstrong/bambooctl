@@ -56,7 +56,7 @@ func init() {
 				fmt.Println("No group permissions configured")
 			}
 
-			rolePermissions, response, err := cli.ProjectPlan.GroupPermissionsList(projectKeyFlag, nil)
+			rolePermissions, response, err := cli.ProjectPlan.RolePermissionsList(projectKeyFlag)
 			if err != nil {
 				fmt.Printf("[%d] Bamboo returned %s when listing group permissions: %s\n", response.StatusCode, response.Status, err)
 				os.Exit(1)
