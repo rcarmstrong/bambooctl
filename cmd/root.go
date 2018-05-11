@@ -1,4 +1,4 @@
-// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
+// Copyright © 2018 Ryan Armstrong <cowboys6750@gmail.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,47 +19,59 @@ import (
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
+	bamboo "github.com/rcarmstrong/go-bamboo"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+const version = "BambooCTL v0.1.0"
+
+var (
+	cli         *bamboo.Client
+	cfgFile     string
+	versionFlag bool
+)
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "bambooctl",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "bambooctl is a commandline tool to help manage and interact with the Atlassian Bamboo CI server.",
+	Long: `bambooctl [--version] [--help] <command> [args]
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+bambooctl is a commandline tool to help manage and interact with the Atlassian Bamboo CI server. 
+Many of the commands require admin privleges, but some can be accessed with lesser user permissions.
+	
+	Admin Commands:
+		project			Project related operations
+		
+		
+	Non-Admin Commands:
+		ToDo			ToDo`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
-func init() { 
+func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
+	// Global flags
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.bambooctl.yaml)")
+	RootCmd.PersistentFlags().BoolVarP(&versionFlag, "version", "v", false, "")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// Blank Run func to allow the output of RootCmd.Use in error messages and help output
+	RootCmd.Run = func(cmd *cobra.Command, args []string) {
+		if versionFlag {
+			fmt.Println(version)
+		} else {
+			RootCmd.Usage()
+		}
+	}
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -83,7 +95,14 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println("Error reading in config:", err)
+		os.Exit(1)
+	}
+
+	cli = bamboo.NewSimpleClient(nil, viper.GetString("username"), viper.GetString("password"))
+
+	if viper.GetString("url") != "" {
+		cli.SetURL(viper.GetString("url"))
 	}
 }
