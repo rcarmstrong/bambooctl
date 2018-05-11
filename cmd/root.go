@@ -34,8 +34,8 @@ var (
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "bambooctl [--version] [--help] <command> [args]",
-	Short: "bambooctl [--version] [--help] <command> [args]",
+	Use:   "bambooctl",
+	Short: "bambooctl is a commandline tool to help manage and interact with the Atlassian Bamboo CI server.",
 	Long: `bambooctl [--version] [--help] <command> [args]
 
 bambooctl is a commandline tool to help manage and interact with the Atlassian Bamboo CI server. 
