@@ -62,7 +62,6 @@ The removeCreatePlan subcommand will remove the create plan permission for the r
 				if err != nil {
 					fmt.Printf("[%d] %s - %s", resp.StatusCode, resp.Status, err)
 				}
-				fmt.Println(g)
 			}
 		}
 

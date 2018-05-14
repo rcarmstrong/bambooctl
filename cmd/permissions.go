@@ -35,7 +35,6 @@ Add or remove project level permissions for individual users or groups.`,
 func init() {
 	projectCmd.AddCommand(permissionsCmd)
 
-	// Flags
 	permissionsCmd.PersistentFlags().StringVarP(&projectKeyFlag, "projectKey", "k", "", "Specifies the key of the project to operate on.")
 
 	permissionsCmd.Run = func(cmd *cobra.Command, args []string) {
@@ -57,6 +56,23 @@ func init() {
 }
 
 func outputPermissions(key string) {
+	userPermissions, response, err := cli.ProjectPlan.UserPermissionsList(key, nil)
+	if err != nil {
+		fmt.Printf("[%d] Bamboo returned %s when listing user permissions: %s\n", response.StatusCode, response.Status, err)
+		os.Exit(1)
+	}
+	if len(userPermissions) != 0 {
+		fmt.Println("User Permissions:")
+		for _, u := range userPermissions {
+			fmt.Println(" ", u.Name)
+			for _, p := range u.Permissions {
+				fmt.Println("   ", p)
+			}
+		}
+	} else {
+		fmt.Printf("%s has no user permissions configured\n", key)
+	}
+
 	groupPermissions, response, err := cli.ProjectPlan.GroupPermissionsList(key, nil)
 	if err != nil {
 		fmt.Printf("[%d] Bamboo returned %s when listing group permissions: %s\n", response.StatusCode, response.Status, err)
@@ -76,7 +92,7 @@ func outputPermissions(key string) {
 
 	rolePermissions, response, err := cli.ProjectPlan.RolePermissionsList(key)
 	if err != nil {
-		fmt.Printf("[%d] Bamboo returned %s when listing group permissions: %s\n", response.StatusCode, response.Status, err)
+		fmt.Printf("[%d] Bamboo returned %s when listing role permissions: %s\n", response.StatusCode, response.Status, err)
 		os.Exit(1)
 	}
 	if len(rolePermissions) != 0 {
