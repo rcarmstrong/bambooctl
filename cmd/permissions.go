@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -39,39 +40,54 @@ func init() {
 
 	permissionsCmd.Run = func(cmd *cobra.Command, args []string) {
 		if projectKeyFlag != "" {
-			groupPermissions, response, err := cli.ProjectPlan.GroupPermissionsList(projectKeyFlag, nil)
+			outputPermissions(projectKeyFlag)
+		} else {
+			log.Println("Getting projects keys...")
+			projects, response, err := cli.Projects.ListProjects()
 			if err != nil {
-				fmt.Printf("[%d] Bamboo returned %s when listing group permissions: %s\n", response.StatusCode, response.Status, err)
+				fmt.Printf("[%d] Bamboo returned %s when getting projects to list permissions: %s\n", response.StatusCode, response.Status, err)
 				os.Exit(1)
-			}
-			if len(groupPermissions) != 0 {
-				fmt.Println("Group Permissions:")
-				for _, g := range groupPermissions {
-					fmt.Println(" ", g.Name)
-					for _, p := range g.Permissions {
-						fmt.Println("   ", p)
-					}
-				}
-			} else {
-				fmt.Println("No group permissions configured")
 			}
 
-			rolePermissions, response, err := cli.ProjectPlan.RolePermissionsList(projectKeyFlag)
-			if err != nil {
-				fmt.Printf("[%d] Bamboo returned %s when listing group permissions: %s\n", response.StatusCode, response.Status, err)
-				os.Exit(1)
-			}
-			if len(rolePermissions) != 0 {
-				fmt.Println("Role Permissions:")
-				for _, r := range rolePermissions {
-					fmt.Println(" ", r.Name)
-					for _, p := range r.Permissions {
-						fmt.Println("   ", p)
-					}
-				}
-			} else {
-				fmt.Println("No role permissions configured")
+			for _, p := range projects {
+				outputPermissions(p.Key)
 			}
 		}
+	}
+}
+
+func outputPermissions(key string) {
+	groupPermissions, response, err := cli.ProjectPlan.GroupPermissionsList(key, nil)
+	if err != nil {
+		fmt.Printf("[%d] Bamboo returned %s when listing group permissions: %s\n", response.StatusCode, response.Status, err)
+		os.Exit(1)
+	}
+	if len(groupPermissions) != 0 {
+		fmt.Println("Group Permissions:")
+		for _, g := range groupPermissions {
+			fmt.Println(" ", g.Name)
+			for _, p := range g.Permissions {
+				fmt.Println("   ", p)
+			}
+		}
+	} else {
+		fmt.Printf("%s has no group permissions configured\n", key)
+	}
+
+	rolePermissions, response, err := cli.ProjectPlan.RolePermissionsList(key)
+	if err != nil {
+		fmt.Printf("[%d] Bamboo returned %s when listing group permissions: %s\n", response.StatusCode, response.Status, err)
+		os.Exit(1)
+	}
+	if len(rolePermissions) != 0 {
+		fmt.Println("Role Permissions:")
+		for _, r := range rolePermissions {
+			fmt.Println(" ", r.Name)
+			for _, p := range r.Permissions {
+				fmt.Println("   ", p)
+			}
+		}
+	} else {
+		fmt.Printf("%s has no role permissions configured\n", key)
 	}
 }
