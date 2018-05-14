@@ -1,4 +1,4 @@
-// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
+// Copyright © 2018 Ryan Armstrong <cowboys6750@gmail.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -28,11 +29,12 @@ var listCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		projects, response, err := cli.Projects.ListProjects()
 		if err != nil {
-			fmt.Printf("[%d] Bamboo returned %s when listing projects: %s", response.StatusCode, response.Status, err)
+			fmt.Printf("[%d] Bamboo returned %s when listing projects: %s\n", response.StatusCode, response.Status, err)
+			os.Exit(1)
 		}
 
 		for _, p := range projects {
-			fmt.Println(p.Name)
+			fmt.Println(p.Name + " - " + p.Key)
 		}
 	},
 }
