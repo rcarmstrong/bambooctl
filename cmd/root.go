@@ -102,7 +102,7 @@ func initConfig() {
 
 	cli = bamboo.NewSimpleClient(nil, viper.GetString("username"), viper.GetString("password"))
 
-	if viper.GetString("url") != "" {
-		cli.SetURL(viper.GetString("url"))
+	if url := viper.GetString("url"); url != "" {
+		cli.SetURL(url)
 	}
 }

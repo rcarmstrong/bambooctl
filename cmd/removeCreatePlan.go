@@ -36,15 +36,15 @@ The removeCreatePlan subcommand will remove the create plan permission for the r
 			os.Exit(1)
 		}
 
-		role, err := cmd.PersistentFlags().GetBool("role")
+		role, err := cmd.Flags().GetBool("role")
 		if err != nil {
 			panic(err)
 		}
-		groups, err := cmd.PersistentFlags().GetStringSlice("groups")
+		groups, err := cmd.Flags().GetStringSlice("groups")
 		if err != nil {
 			panic(err)
 		}
-		users, err := cmd.PersistentFlags().GetStringSlice("users")
+		users, err := cmd.Flags().GetStringSlice("users")
 		if err != nil {
 			panic(err)
 		}
@@ -79,7 +79,7 @@ The removeCreatePlan subcommand will remove the create plan permission for the r
 func init() {
 	permissionsCmd.AddCommand(removeCreatePlanCmd)
 
-	removeCreatePlanCmd.PersistentFlags().BoolP("role", "r", false, fmt.Sprintf("Defaults to %s", bamboo.LoggedInRole))
-	removeCreatePlanCmd.PersistentFlags().StringSliceP("groups", "g", []string{}, "A single or comma seperated list of groups to remove the create plan permission to.")
-	removeCreatePlanCmd.PersistentFlags().StringSliceP("users", "u", []string{}, "A single or comma seperated list of users to remove the create plan permission to.")
+	removeCreatePlanCmd.Flags().BoolP("role", "r", false, fmt.Sprintf("Defaults to %s", bamboo.LoggedInRole))
+	removeCreatePlanCmd.Flags().StringSliceP("groups", "g", []string{}, "A single or comma seperated list of groups to remove the create plan permission to.")
+	removeCreatePlanCmd.Flags().StringSliceP("users", "u", []string{}, "A single or comma seperated list of users to remove the create plan permission to.")
 }

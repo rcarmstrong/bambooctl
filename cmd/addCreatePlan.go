@@ -36,15 +36,15 @@ The addCreatePlan subcommand will change the create plan permission for the role
 			os.Exit(1)
 		}
 
-		role, err := cmd.PersistentFlags().GetBool("role")
+		role, err := cmd.Flags().GetBool("role")
 		if err != nil {
 			panic(err)
 		}
-		groups, err := cmd.PersistentFlags().GetStringSlice("groups")
+		groups, err := cmd.Flags().GetStringSlice("groups")
 		if err != nil {
 			panic(err)
 		}
-		users, err := cmd.PersistentFlags().GetStringSlice("users")
+		users, err := cmd.Flags().GetStringSlice("users")
 		if err != nil {
 			panic(err)
 		}
@@ -79,7 +79,7 @@ The addCreatePlan subcommand will change the create plan permission for the role
 func init() {
 	permissionsCmd.AddCommand(addCreatePlanCmd)
 
-	addCreatePlanCmd.PersistentFlags().BoolP("role", "r", false, fmt.Sprintf("Defaults to %s", bamboo.LoggedInRole))
-	addCreatePlanCmd.PersistentFlags().StringSliceP("groups", "g", []string{}, "A single or comma seperated list of groups to grant the create plan permission to.")
-	addCreatePlanCmd.PersistentFlags().StringSliceP("users", "u", []string{}, "A single or comma seperated list of users to grant the create plan permission to.")
+	addCreatePlanCmd.Flags().BoolP("role", "r", false, fmt.Sprintf("Defaults to %s", bamboo.LoggedInRole))
+	addCreatePlanCmd.Flags().StringSliceP("groups", "g", []string{}, "A single or comma seperated list of groups to grant the create plan permission to.")
+	addCreatePlanCmd.Flags().StringSliceP("users", "u", []string{}, "A single or comma seperated list of users to grant the create plan permission to.")
 }
