@@ -56,7 +56,7 @@ func init() {
 }
 
 func outputPermissions(key string) {
-	userPermissions, response, err := cli.ProjectPlan.UserPermissionsList(key, nil)
+	userPermissions, response, err := cli.ProjectPlan.UserPermissionsList(key)
 	if err != nil {
 		fmt.Printf("[%d] Bamboo returned %s when listing user permissions: %s\n", response.StatusCode, response.Status, err)
 		os.Exit(1)
@@ -73,7 +73,7 @@ func outputPermissions(key string) {
 		fmt.Printf("%s has no user permissions configured\n", key)
 	}
 
-	groupPermissions, response, err := cli.ProjectPlan.GroupPermissionsList(key, nil)
+	groupPermissions, response, err := cli.ProjectPlan.GroupPermissionsList(key)
 	if err != nil {
 		fmt.Printf("[%d] Bamboo returned %s when listing group permissions: %s\n", response.StatusCode, response.Status, err)
 		os.Exit(1)

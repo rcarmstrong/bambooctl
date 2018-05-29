@@ -24,7 +24,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-const version = "BambooCTL v0.1.0"
+const version = "bamboozle v0.1.0"
 
 var (
 	cli         *bamboo.Client
@@ -34,11 +34,11 @@ var (
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "bambooctl",
-	Short: "bambooctl is a commandline tool to help manage and interact with the Atlassian Bamboo CI server.",
-	Long: `bambooctl [--version] [--help] <command> [args]
+	Use:   "bamboozle",
+	Short: "bamboozle is a commandline tool to help manage and interact with the Atlassian Bamboo CI server.",
+	Long: `bamboozle [--version] [--help] <command> [args]
 
-bambooctl is a commandline tool to help manage and interact with the Atlassian Bamboo CI server. 
+bamboozle is a commandline tool to help manage and interact with the Atlassian Bamboo CI server. 
 Many of the commands require admin privleges, but some can be accessed with lesser user permissions.
 	
 	Admin Commands:
@@ -61,7 +61,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	// Global flags
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.bambooctl.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.bamboozle.yaml)")
 	RootCmd.PersistentFlags().BoolVarP(&versionFlag, "version", "v", false, "")
 
 	// Blank Run func to allow the output of RootCmd.Use in error messages and help output
@@ -87,9 +87,9 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".bambooctl" (without extension).
+		// Search config in home directory with name ".bamboozle" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".bambooctl")
+		viper.SetConfigName(".bamboozle")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
