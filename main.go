@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/rcarmstrong/bambooctl/cmd"
+import "github.com/rcarmstrong/bamboozle/cmd"
 
 func main() {
 	cmd.Execute()
